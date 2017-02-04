@@ -1,0 +1,22 @@
+@import '../../variables.scss';
+
+div.pager {
+    text-align: center;
+
+    button {
+        display: inline-block;
+        border: 1px solid $color-border-5;
+        padding: 2px 5px 4px 5px;
+        margin: 5px 0;
+        width: 120px;
+        font-size: 0.8em;
+        font-weight: bold;
+        background-color: $color-back-dark;
+        color: $color-font-1;
+    }
+
+    button:hover {
+        background-color: $color-back-mid;
+        color: $color-font-1;
+    }
+}

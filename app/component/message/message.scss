@@ -1,0 +1,45 @@
+@import '../../variables.scss';
+
+.blog-message {
+    margin: 20px 30px 30px 40px;
+    border-bottom: 1px solid $color-border-1;
+
+    header {
+        margin-bottom: 10px;
+        padding: 5px 10px;
+
+        h1 {
+           margin: 3px 0;
+           a {
+                color: $color-font-5;
+           }
+        }
+
+        p {
+            color: $color-dark-font;
+            font-size: 0.8em;
+            margin: 3px 0;
+        }
+
+        .category {
+            display: inline-block;
+            border: 1px solid $color-border-1;
+            padding: 4px 5px 2px 5px;
+            margin: 0 3px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+    }
+
+    .blog-message-body {
+        padding: 5px 10px;
+        text-align: justify;
+    }
+
+    footer {
+        margin-top: 10px;
+        padding: 5px 10px;
+        border-top: 1px solid $color-border-4;
+    }
+
+}

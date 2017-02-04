@@ -1,0 +1,39 @@
+@import '../../variables.scss';
+
+div.dashboard {
+
+    div.dashboard-menu {
+        color: $color-font-1;
+        margin: 16px 10px 0 10px;
+
+        .row {
+            .menu-item {
+                background-color: $color-back-dark;
+                color: $color-font-1;
+                text-align: center;
+
+                a {
+                    width: 75%;
+                    display: inline-block;
+                    font-weight: bold;
+                    text-decoration: none;
+                    padding-left: 10%;
+                    padding-right: 10%;
+                    padding-top:10px;
+                    padding-bottom:10px;
+                    border-top: 1px solid #176ba1;
+                    border-bottom: 1px solid #176ba1;
+                    color: $color-font-1;
+                }
+
+                a:hover {
+                    background-color: #1f95e0;
+                }
+            }
+        }
+    }
+
+    div.dashboard-content {
+        padding: 20px;
+    }
+}

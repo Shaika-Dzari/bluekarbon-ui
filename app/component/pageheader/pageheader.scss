@@ -1,0 +1,137 @@
+@import '../../variables.scss';
+
+.site-header {
+    background-color: $color-back-dark;
+    color: $color-font-1;
+
+    h1.site-title {
+        margin: 0 5px 5px 5px;
+        display: inline-block;
+        a {
+            color: $color-font-1;
+            img {
+                vertical-align: middle;
+            }
+        }
+    }
+
+    h5 {
+        display: inline-block;
+        margin: 0 0 0 5px;
+        font-size: 1em;
+    }
+
+    @media only screen and (min-width: 920px) {
+        h1.site-title {
+            display: block;
+            margin: 8px 5px 20px 20px;
+        }
+
+        h5 {
+            display: block;
+            margin: 8px 5px 20px 20px;
+        }
+    }
+
+
+
+    .page-header-menu {
+        margin-top: 5px;
+        padding: 0 0 0 5px;
+        text-align: center;
+
+        nav.site-menu {
+            border-top: 1px solid #176ba1;
+            border-bottom: 1px solid #176ba1;
+
+            a {
+                text-align: center;
+                display: inline-block;
+                font-weight: bold;
+                text-decoration: none;
+                padding: 8px 10px;
+                color: $color-font-1;
+
+                span {
+                    display: inline;
+                }
+
+                img {
+                    display: inline;
+                }
+            }
+
+            a:hover {
+                background-color: #1f95e0;
+            }
+        }
+    }
+
+    .page-header-lang {
+        margin: 5px 0;
+        text-align: center;
+
+        a {
+            display: inline-block;
+            padding: 3px 5px;
+            margin: 5px;
+            font-size: 0.9em;
+            color: #fff;
+            width: 100px;
+            border: 1px solid #176ba1;
+        }
+
+        a:hover {
+            background-color: #1f95e0;
+        }
+    }
+
+    .page-header-feedback {
+        text-align: center;
+    }
+
+    @media only screen and (min-width: 920px) {
+        .page-header-menu {
+            margin-top: 20px;
+            padding: 20px 0;
+
+            nav.site-menu {
+                border: 0;
+                a {
+                    border-top: 1px solid #176ba1;
+                    border-bottom: 1px solid #176ba1;
+                    display: block;
+                    margin: 16px 10px 0 10px;
+                    padding: 10px;
+
+                    span {
+                        display: inline;
+                    }
+
+                    img {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .page-header-lang {
+            margin: 20px 0;
+            text-align: center;
+
+            a {
+                display: inline-block;
+                padding: 3px 5px;
+                margin: 5px;
+                font-size: 0.9em;
+                color: #fff;
+                width: 100px;
+                border: 1px solid #176ba1;
+            }
+
+            a:hover {
+                background-color: #1f95e0;
+            }
+        }
+    }
+}

@@ -1,0 +1,73 @@
+@import '../../variables.scss';
+
+.grid-list {
+
+    vertical-align: top;
+    font-size: 0.9em;
+
+    .grid-item {
+        float: left;
+        margin: 3px 10px;
+        padding: 5px;
+        border: 1px solid $color-border-1;
+        width: 280px;
+        text-align: center;
+        position: relative;
+
+        .grid-item-preview {
+            width: 280px;
+            height: 280px;
+
+            .grid-item-file-img {
+                width: 260px;
+                max-height: 260px;
+            }
+
+            .grid-item-file-other {
+                width: 260px;
+                height: 260px;
+            }
+        }
+
+        .grid-item-details {
+            border-top: 1px solid $color-border-1;
+            max-width: 280px;
+            span {
+                display: block;
+                word-break: break-all;
+                width: 250px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .grid-item-info {
+                font-size: 0.8em;
+            }
+        }
+
+        .grid-item-menu {
+            display: table;
+            width: 100%;
+            border-top: 1px solid $color-border-1;
+            background-color: $color-back-dark;
+            color: $color-font-1;
+
+            a {
+                text-align: center;
+                display: table-cell;
+                font-weight: bold;
+                text-decoration: none;
+                padding: 3px;
+                border-top: 1px solid #176ba1;
+                border-bottom: 1px solid #176ba1;
+                color: $color-font-1;
+                width: 33%;
+            }
+
+            a:hover {
+                background-color: #1f95e0;
+            }
+        }
+    }
+}
