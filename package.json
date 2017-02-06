@@ -6,7 +6,7 @@
   "scripts": {
     "build.dev": "NODE_ENV=dev ./node_modules/.bin/webpack",
     "build.prod": "NODE_ENV=production ./node_modules/.bin/webpack",
-    "deploy.node": "cp site/bundle.js ../bluekarbon-node/public/ && cp site/style.css ../bluekarbon-node/public/",
+    "deploy.node": "cp site/bundle.js ../bluekarbon-node/public/ && cp site/*.css ../bluekarbon-node/public/ && cp site/*.jpg ../bluekarbon-node/public/ && cp site/*.gif ../bluekarbon-node/public/",
     "watch": "NODE_ENV=dev ./node_modules/.bin/webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
