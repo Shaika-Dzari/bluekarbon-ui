@@ -1,17 +1,17 @@
 {
-  "name": "cryoseism-ui",
+  "name": "bluekarbon-ui",
   "version": "1.0.0",
-  "description": "Cryoseism frontend powered by React and Redux.",
+  "description": "bluekarbon frontend powered by React and Redux.",
   "main": "index.js",
   "scripts": {
     "build.dev": "NODE_ENV=dev ./node_modules/.bin/webpack",
     "build.prod": "NODE_ENV=production ./node_modules/.bin/webpack",
-    "deploy.node": "cp site/bundle.js ../cryoseism-node/public/ && cp site/style.css ../cryoseism-node/public/",
+    "deploy.node": "cp site/bundle.js ../bluekarbon-node/public/ && cp site/style.css ../bluekarbon-node/public/",
     "watch": "NODE_ENV=dev ./node_modules/.bin/webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "cryoseism",
+    "bluekarbon",
     "react",
     "redux",
     "sass"
