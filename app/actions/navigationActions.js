@@ -1,4 +1,5 @@
-import { doSwitchModule } from './messageActions.js';
+//import { doSwitchModule } from './messageActions.js';
+import {doBlogPostsFetchPage} from './blogPostActions.js';
 import { push } from 'react-router-redux';
 import * as FetchUtils from '../utils/FetchUtils.js';
 
@@ -29,6 +30,7 @@ export function doStopLoading() {
 }
 
 export function doRaiseGlobalError(error) {
+
     return {
         type: GLOBAL_ERROR,
         error: error
@@ -38,8 +40,7 @@ export function doRaiseGlobalError(error) {
 export function doNavigationTo(moduleid, url) {
 
     return (dispatch, getState) => {
-        let mod = getState().modules.items[moduleid];
-        let url = url || MODULE_URLS[mod.code.toLowerCase()];
-        dispatch(doSwitchModule({moduleid: moduleid, url: url}));
+        dispatch(doBlogPostsFetchPage(0, null, true));
+        dispatch(push(MODULE_URLS.blog));
     };
 }

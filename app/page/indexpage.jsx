@@ -20,11 +20,12 @@ class IndexPage extends React.Component {
     }
 
     componentWillMount() {
-        const {module} = this.props;
+        const {modules} = this.props;
         const {dispatch} = this.props;
 
         // Modules need to be loaded before doing anything.
-        if (!module || !module.items) {
+        console.log('mod => ', !modules, !modules.items);
+        if (!modules || !modules.items) {
             dispatch(doFetchModules());
         }
     }

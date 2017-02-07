@@ -4,7 +4,7 @@ import { getUrlParamsString, mkToHtml } from '../utils/HtmlUtils.js';
 import * as FetchUtils from '../utils/FetchUtils.js';
 import makeActionCreator from './actionCreator.js';
 
-const BLOGPOST_URL = '/api/blog/messages';
+const BLOGPOST_URL = '/api/blog/posts';
 const BLOGPOST_SIZE = 3;
 
 // Action Constants
@@ -21,13 +21,19 @@ export const BP_EDITOR_SAVE = 'BP_EDITOR_SAVE';
 export const BP_EDIT = 'BP_EDIT';
 export const BP_ERROR = 'BP_ERROR';
 
-export const doBlogPostsFetchPage = (page, categoryid) => {
+export const doBlogPostsFetchPage = (page, categoryid, skipcache) => {
     return (dispatch, getState) => {
-        let p = new PagingParam(page, BLOGPOST_SIZE);
-        let cparam = categoryid ? 'categoryid=' + encodeURIComponent(categoryid) : '';
-        return FetchUtils.get(dispatch, BLOGPOST_URL, getUrlParamsString(page, [cparam]),
-                              doBlogPostsReceive,
-                              doBlogPostsError);
+        let needToLoad = skipcache || !getState().blogposts.preloaded;
+
+        if (needToLoad) {
+
+            let p = new PagingParam(page, BLOGPOST_SIZE);
+            let cparam = categoryid ? 'categoryid=' + encodeURIComponent(categoryid) : '';
+            return FetchUtils.get(dispatch, BLOGPOST_URL + '?' + getUrlParamsString(page, [cparam]),
+                                {credentials: 'include'},
+                                doBlogPostsReceive,
+                                doBlogPostsError);
+        }
     }
 }
 

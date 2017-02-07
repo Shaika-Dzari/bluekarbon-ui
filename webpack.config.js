@@ -5,7 +5,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const isDev = (process.env.NODE_ENV === 'dev');
 
 const APP_DIR = path.join(__dirname, 'app');
-const BUILD_DIR = path.join(__dirname, 'site');
+const BUILD_DIR = path.join(__dirname, '../bluekarbon-node/public');
 
 const PLUGINS = [
     new ExtractTextPlugin("style.css", {

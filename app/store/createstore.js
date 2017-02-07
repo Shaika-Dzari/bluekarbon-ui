@@ -7,7 +7,7 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 import { createHtmlBody } from '../utils/HtmlUtils.js';
 
 const reduxRouterMiddleware = routerMiddleware(browserHistory);
-const preloadedState = JSON.parse(window.__PRELOADED_STATE__ || '{}');
+let preloadedState = JSON.parse(window.__PRELOADED_STATE__ || '{}');
 
 if (preloadedState && preloadedState.messages && preloadedState.messages.items) {
     for (let mid in preloadedState.messages.items) {

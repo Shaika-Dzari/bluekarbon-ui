@@ -14,7 +14,7 @@ import {doBlogPostsFetchPage} from '../../actions/blogPostActions.js';
 import './blogpage.scss';
 
 const mapStateToProps = (state, ownProps) => {
-
+    let blogmoduleid = state.modules.codeindex['BLOG'];
     return {
         blogposts: state.blogposts.items,
         index: state.blogposts.index,
