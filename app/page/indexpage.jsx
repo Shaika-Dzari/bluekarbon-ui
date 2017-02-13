@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { doNavigationTo } from '../actions/navigationActions.js';
 import { doFetchModules } from '../actions/moduleActions.js';
+import { doStatsFetch } from '../actions/statisticActions.js';
 
 import './indexpage.scss';
 
@@ -20,14 +21,13 @@ class IndexPage extends React.Component {
     }
 
     componentWillMount() {
-        const {modules} = this.props;
         const {dispatch} = this.props;
 
         // Modules need to be loaded before doing anything.
-        console.log('mod => ', !modules, !modules.items);
-        if (!modules || !modules.items) {
-            dispatch(doFetchModules());
-        }
+        dispatch(doFetchModules());
+
+        // Stats are used for pagination
+        dispatch(doStatsFetch());
     }
 
     componentDidMount() {

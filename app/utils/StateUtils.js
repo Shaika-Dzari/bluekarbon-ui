@@ -49,10 +49,10 @@ export const normalize = (pObjectList) => {
             index.push(id);
         });
 
-        return { items: items, index: index };
+        return { items: items, index: index, preloaded: false };
     }
 
-    return {items: {}, index: []};
+    return {items: {}, index: [], preloaded: false};
 }
 
 

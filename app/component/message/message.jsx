@@ -8,6 +8,10 @@ const Message = ({id, title, body, bodyhtml, authorname, createdat, categories, 
     let cats = null;
     let innerTitle = null;
 
+    if (!bodyhtml) {
+        bodyhtml = body;
+    }
+
     if (categories) {
         cats = categories.map((v, i) => {
             return <span key={'msg-cat-' + v.id} className="category">{v.name}</span> ;

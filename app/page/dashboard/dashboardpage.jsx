@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
 import { connect } from 'react-redux';
-import {doSwitchModule} from '../../actions/messageActions.js';
+import {doBlogPostsAdminFetchPage} from '../../actions/blogPostActions.js';
 import DashboardContent from './dashboardcontent.jsx';
 import tr from '../../i18n/i18n.js';
 
@@ -24,7 +24,10 @@ class DashboardPage extends React.Component {
     onAdminMessage(e) {
         e.preventDefault();
         const {modules, dispatch} = this.props;
-        dispatch(doSwitchModule({moduleid: modules.codeindex['BLOG'], size: 20, url: '/dashboard/messages', args: ['published=false']}));
+        //dispatch(doSwitchModule({moduleid: modules.codeindex['BLOG'], size: 20, url: '/dashboard/messages', args: ['published=false']}));
+
+        dispatch(doBlogPostsAdminFetchPage(0, null, true, 10, '/dashboard/messages'));
+
     }
 
     render() {

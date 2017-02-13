@@ -3,9 +3,10 @@ import PagingParam from '../utils/PagingParam.js';
 import { getUrlParamsString, mkToHtml } from '../utils/HtmlUtils.js';
 import * as FetchUtils from '../utils/FetchUtils.js';
 import makeActionCreator from './actionCreator.js';
+import {MODULE_URLS} from './navigationActions.js';
 
 const BLOGPOST_URL = '/api/blog/posts';
-const BLOGPOST_SIZE = 3;
+export const BLOGPOST_SIZE = 3;
 
 // Action Constants
 export const BP_FILTER = 'BP_FILTER';
@@ -21,21 +22,47 @@ export const BP_EDITOR_SAVE = 'BP_EDITOR_SAVE';
 export const BP_EDIT = 'BP_EDIT';
 export const BP_ERROR = 'BP_ERROR';
 
-export const doBlogPostsFetchPage = (page, categoryid, skipcache) => {
+export const doBlogPostsFetchPage = (page, categoryid, skipcache, pagesize, pushurl) => {
     return (dispatch, getState) => {
+        let psize = pagesize || BLOGPOST_SIZE;
         let needToLoad = skipcache || !getState().blogposts.preloaded;
 
+        console.log('Will load >> ' + needToLoad, skipcache, getState().blogposts.preloaded);
         if (needToLoad) {
-
-            let p = new PagingParam(page, BLOGPOST_SIZE);
+            let p = new PagingParam(page, psize);
             let cparam = categoryid ? 'categoryid=' + encodeURIComponent(categoryid) : '';
-            return FetchUtils.get(dispatch, BLOGPOST_URL + '?' + getUrlParamsString(page, [cparam]),
+            let uparam = getUrlParamsString(p, [cparam]);
+
+            return FetchUtils.get(dispatch, BLOGPOST_URL + '?' + uparam,
                                 {credentials: 'include'},
-                                doBlogPostsReceive,
+                                {action: bps => {
+                                    let nextUrl = pushurl || MODULE_URLS.blog;
+                                    dispatch(doBlogPostsReceive(bps));
+                                    dispatch(push(nextUrl + '?' + uparam));
+                                }},
                                 doBlogPostsError);
         }
     }
 }
+
+export const doBlogPostsAdminFetchPage = (page, pagesize) => {
+    return (dispatch, getState) => {
+        let psize = pagesize || BLOGPOST_SIZE;
+
+        let p = new PagingParam(page, psize);
+        let uparam = getUrlParamsString(p, ['published=false']);
+
+        return FetchUtils.get(dispatch, BLOGPOST_URL + '?' + uparam,
+                            {credentials: 'include'},
+                            {action: bps => {
+                                dispatch(doBlogPostsReceive(bps));
+                                dispatch(push('/dashboard/messages' + '?' + uparam));
+                            }},
+                            doBlogPostsError);
+    }
+}
+
+
 
 export const doBlogPostsFetchAndEdit = (blogpostid) => {
     if (blogpostid == 'new') {

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import {doMessageFetch, doMessageFetchForEdit, doMessageEditAndNavigate, doFilterAndNavigate, doSwitchModule} from '../../actions/messageActions.js';
 import Table from '../../component/table/table.jsx';
 import PagingParam from '../../utils/PagingParam.js';
-import DatePager from '../../component/pager/datepager.jsx';
 import LinkPager from '../../component/pager/linkpager.jsx';
 
 import './adminmessage.scss';
@@ -12,15 +11,16 @@ import './adminmessage.scss';
 const mapStateToProps = (state, ownProps) => {
 
     let moduleid = ownProps.location.query.moduleid;
+    let page = ownProps.location.query.page || 0;
 
     if (!moduleid) {
         moduleid = state.modules.codeindex['BLOG'];
     }
 
     return {
-        messages: state.messages.items,
-        displayed: state.messages.moduleindex[moduleid] || [],
-        page: state.messages.page,
+        messages: state.blogposts.items,
+        displayed: state.blogposts.index || [],
+        page: page,
         modules: state.modules,
         moduleid: moduleid
     }

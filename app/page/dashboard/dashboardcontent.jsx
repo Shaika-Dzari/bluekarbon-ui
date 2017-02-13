@@ -6,7 +6,7 @@ import './dashboardcontent.scss';
 
 const mapStateToProps = (state) => {
     return {
-        statistics: state.statistics.items,
+        statistics: state.statistics.tables,
         modules: state.modules
     }
 }
@@ -27,7 +27,18 @@ class DashboardContent extends React.Component {
         let sts = null;
 
         if (this.props.statistics && this.props.statistics.length > 0) {
-
+            sts = [];
+            for (let sta in this.props.statistics) {
+                let s = this.props.statistics[sta];
+                sts.push(
+                    <div key={'stats-' + s.id} className="dashboard-content-stats">
+                            <span>{s.tablename}</span>
+                            <span>{s.statistic}</span>
+                            <span>{s.value}</span>
+                       </div>
+                );
+            }
+            /*
             sts = this.props.statistics.map(s => {
                 return <div key={'stats-' + s.id} className="dashboard-content-stats">
                             <span>{s.tablename}</span>
@@ -35,6 +46,7 @@ class DashboardContent extends React.Component {
                             <span>{s.value}</span>
                        </div>;
             });
+            */
         }
 
         let mods = this.props.modules.index.map(i => {

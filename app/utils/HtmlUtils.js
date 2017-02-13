@@ -1,4 +1,5 @@
 import Remarkable from 'remarkable';
+import PagingParam from './PagingParam.js';
 const remarkable = new Remarkable();
 
 export function getUrlParamsString(pagingParam, additionalParams) {
@@ -7,11 +8,17 @@ export function getUrlParamsString(pagingParam, additionalParams) {
     let needtoJoin = false;
     if (pagingParam) {
 
-        if (pagingParam.getPage())
-            body.push('page=' + encodeURIComponent(pagingParam.getPage()));
+        if (pagingParam instanceof PagingParam) {
 
-        if (pagingParam.getSize())
-            body.push('size=' + encodeURIComponent(pagingParam.getSize()));
+            if (pagingParam.getPage())
+                body.push('page=' + encodeURIComponent(pagingParam.getPage()));
+
+            if (pagingParam.getSize())
+                body.push('size=' + encodeURIComponent(pagingParam.getSize()));
+
+        } else {
+            body.push('page=' + pagingParam);
+        }
 
         needtoJoin = true;
     }

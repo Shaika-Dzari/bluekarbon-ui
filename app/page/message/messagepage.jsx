@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
     let messageId = ownProps.params.messageId
     return {
         selectedid: messageId,
-        message: state.messages.items[messageId],
+        blogpost: state.blogposts.items[messageId],
         comments: state.comments.items,
         commentsindex: state.comments.index
     };
@@ -48,7 +48,7 @@ class MessagePage extends React.Component {
             <div className="row">
                 <div className="col-10">
                     <div className="messagepage-details">
-                        <Message {...this.props.message} />
+                        <Message {...this.props.blogpost} />
                         <div className="messagepage-comments">
                             {commentlist}
                         </div>

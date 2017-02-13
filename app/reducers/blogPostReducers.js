@@ -35,8 +35,7 @@ const initialState = {
 export const blogPostReducers = (state = initialState, action) => {
     switch (action.type) {
         case BP_LIST_RECEIVE:
-            let recBps = action.blogposts.map(b => { b.bodyhtml = mkToHtml(b.body); return b;} )
-            recBps = normalize(recBps);
+            let recBps = normalize(action.blogposts);
             return Object.assign({}, state, recBps);
 
         case BP_FILTER:
@@ -74,7 +73,7 @@ export const blogPostReducers = (state = initialState, action) => {
 
         case BP_SAVED:
             let bp = Object.assign({}, action.blogpost);
-            bp.bodyhtml = mkToHtml(bp.body);
+            // bp.bodyhtml = mkToHtml(bp.body);
             let bpsprime = Object.assign({}, state.items, {[action.blogpost.id]: action.blogpost});
             return Object.assign({}, state, {items: bpsprime});
 

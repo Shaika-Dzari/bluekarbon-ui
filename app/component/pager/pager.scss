@@ -3,20 +3,27 @@
 div.pager {
     text-align: center;
 
-    button {
+    .pager-btn-page {
         display: inline-block;
         border: 1px solid $color-border-5;
         padding: 2px 5px 4px 5px;
-        margin: 5px 0;
-        width: 120px;
+        margin: 5px 3px;
+        min-width: 60px;
         font-size: 0.8em;
         font-weight: bold;
         background-color: $color-back-dark;
         color: $color-font-1;
+
+        &.pager-btn-page-select {
+            background-color: $color-back-mid;
+            color: $color-font-1;
+        }
     }
 
-    button:hover {
+    .pager-btn-page:hover {
         background-color: $color-back-mid;
         color: $color-font-1;
+        cursor: pointer;
     }
+
 }

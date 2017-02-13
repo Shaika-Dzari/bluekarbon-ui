@@ -2,16 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import CategoryList from '../../component/categorylist/categorylist.jsx';
 import MessageList from '../../component/messagelist/messagelist.jsx';
-import LinkPager from '../../component/pager/linkpager.jsx';
+import Pager from '../../component/pager/pager.jsx';
 import Remarkable from 'remarkable';
 import PagingParam from '../../utils/PagingParam.js';
 import { scrollToTopPage } from '../../utils/HtmlUtils.js';
 
-//import {doMessageFetchAndGo, doSwitchModule} from '../../actions/messageActions.js';
 import {doCategoryFetch} from '../../actions/categoryActions.js';
 import {doBlogPostsFetchPage} from '../../actions/blogPostActions.js';
 
 import './blogpage.scss';
+
+const BASE_NB_PAGE = 3;
 
 const mapStateToProps = (state, ownProps) => {
     let blogmoduleid = state.modules.codeindex['BLOG'];
@@ -20,7 +21,8 @@ const mapStateToProps = (state, ownProps) => {
         index: state.blogposts.index,
         page: ownProps.location.query.page || 0,
         categories: state.categories.items,
-        categoriesindex: state.categories.moduleindex[blogmoduleid]
+        categoriesindex: state.categories.moduleindex[blogmoduleid],
+        statistics: state.statistics
     }
 }
 
@@ -31,9 +33,9 @@ class BlogPage extends React.Component {
         this.onChangePage = this.onChangePage.bind(this);
     }
 
-    onChangePage(pageParam) {
+    onChangePage(page) {
         const { dispatch } = this.props;
-        dispatch(doMessageFetchAndGo(pageParam));
+        dispatch(doBlogPostsFetchPage(page, null, true));
         scrollToTopPage();
     }
 
@@ -50,8 +52,8 @@ class BlogPage extends React.Component {
     render() {
 
         let msgs = this.props.blogposts && this.props.index ? <MessageList messages={this.props.blogposts} index={this.props.index} /> : null;
-
-        // <LinkPager size={5} prevdate={prevdate} nextdate={nextdate} callback={this.onChangePage} />
+        let total = this.props.statistics.tables.message.blog_total_count || 1;
+        let nbPage = Math.min(BASE_NB_PAGE, Math.round(total / 3) + 1);
 
         return (
                 <div className="row">
@@ -60,7 +62,7 @@ class BlogPage extends React.Component {
                             {msgs}
                         </div>
                         <div className="list-ctn">
-
+                            <Pager callback={this.onChangePage} currentPage={this.props.page + 1} nbPage={nbPage} />
                         </div>
                     </div>
                     <div className="col-2">

@@ -7,10 +7,14 @@ export const MODULE_LIST_RECEIVE = 'MODULE_LIST_RECEIVE';
 const MODULE_URL = '/api/modules';
 
 export const doFetchModules = () => {
-    return dispatch => {
-        FetchUtils.get(dispatch, MODULE_URL, {}, doModulesReceive, {action: error => {
-            dispatch(push('/error'));
-        }})
+    return (dispatch, getState) => {
+
+        if (!getState().modules || !getState().modules.items || !getState().modules.preloaded) {
+
+            FetchUtils.get(dispatch, MODULE_URL, {}, doModulesReceive, {action: error => {
+                dispatch(push('/error'));
+            }});
+        }
     }
 }
 

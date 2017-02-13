@@ -11,6 +11,11 @@ export const USER_BAD_CREDENTIAL = 'USER_BAD_CREDENTIAL';
 export const USER_CHALLENGE = 'USER_CHALLENGE';
 export const USER_LOGOUT = 'USER_LOGOUT';
 
+const USER_URL = '/api/users';
+const LOGIN_URL = USER_URL + '/login';
+const LOGOUT_URL = USER_URL + '/logout';
+const CHALLENGE_URL = USER_URL + '/challenge';
+
 export function doLoginPageUsernameKp(value) {
     return {
         type: USER_LP_USERNAME_KEYPRESS,
@@ -42,7 +47,7 @@ export function doLoginPageSubmit() {
             credentials: 'include'
         };
 
-        return fetch("/api/sec/login", opts)
+        return fetch(LOGIN_URL, opts)
             .then(r => r.json())
             .then(user => {
                 dispatch(doStopLoading());
@@ -84,7 +89,7 @@ export function doLogout() {
 
         sessionStorage.removeItem('4nuser');
 
-        return window.fetch("/api/sec/logout", {credentials: 'include'})
+        return window.fetch(LOGOUT_URL, {credentials: 'include'})
             .then(function(){
                 dispatch(doLogoutSuccess());
                 dispatch(push('/'));
@@ -100,7 +105,7 @@ export function doChallenge(toUrl) {
 
     return (dispatch, getState) => {
 
-        return fetch("/api/sec/challenge", {credentials: 'include'})
+        return fetch(CHALLENGE_URL, {credentials: 'include'})
             .then(r => r.json())
             .then(user => {
 

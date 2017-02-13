@@ -1,4 +1,3 @@
-//import { doSwitchModule } from './messageActions.js';
 import {doBlogPostsFetchPage} from './blogPostActions.js';
 import { push } from 'react-router-redux';
 import * as FetchUtils from '../utils/FetchUtils.js';
@@ -9,7 +8,7 @@ export const GLOBAL_ERROR = 'GLOBAL_ERROR';
 export const NAVIGATE_TO = 'NAVIGATE_TO';
 
 
-const MODULE_URLS = {
+export const MODULE_URLS = {
     blog: '/blog',
     about: '/about',
     project: '/project',
@@ -40,7 +39,7 @@ export function doRaiseGlobalError(error) {
 export function doNavigationTo(moduleid, url) {
 
     return (dispatch, getState) => {
-        dispatch(doBlogPostsFetchPage(0, null, true));
+        dispatch(doBlogPostsFetchPage(0));
         dispatch(push(MODULE_URLS.blog));
     };
 }

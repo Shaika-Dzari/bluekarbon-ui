@@ -41,7 +41,7 @@ const AppRoute = () => {
 
                     <Route path="blog" component={ PublicLayout }>
                         <IndexRoute component={ BlogPage } />
-                        <Route path="blog/:messageId" component={ MessagePage } />
+                        <Route path=":messageId" component={ MessagePage } />
                     </Route>
 
                     <Route path="login" component={ PublicLayout }>
