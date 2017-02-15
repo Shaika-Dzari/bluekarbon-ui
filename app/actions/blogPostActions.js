@@ -22,23 +22,23 @@ export const BP_EDITOR_SAVE = 'BP_EDITOR_SAVE';
 export const BP_EDIT = 'BP_EDIT';
 export const BP_ERROR = 'BP_ERROR';
 
-export const doBlogPostsFetchPage = (page, categoryid, skipcache, pagesize, pushurl) => {
+export const doBlogPostsFetchPage = (page, pagesize, pushurl, skipcache, addtionalparams) => {
     return (dispatch, getState) => {
         let psize = pagesize || BLOGPOST_SIZE;
         let needToLoad = skipcache || !getState().blogposts.preloaded;
 
-        console.log('Will load >> ' + needToLoad, skipcache, getState().blogposts.preloaded);
         if (needToLoad) {
             let p = new PagingParam(page, psize);
-            let cparam = categoryid ? 'categoryid=' + encodeURIComponent(categoryid) : '';
-            let uparam = getUrlParamsString(p, [cparam]);
+            let uparam = getUrlParamsString(p, addtionalparams);
 
             return FetchUtils.get(dispatch, BLOGPOST_URL + '?' + uparam,
                                 {credentials: 'include'},
                                 {action: bps => {
-                                    let nextUrl = pushurl || MODULE_URLS.blog;
                                     dispatch(doBlogPostsReceive(bps));
-                                    dispatch(push(nextUrl + '?' + uparam));
+
+                                    if (pushurl) {
+                                        dispatch(push(pushurl + '?' + uparam));
+                                    }
                                 }},
                                 doBlogPostsError);
         }

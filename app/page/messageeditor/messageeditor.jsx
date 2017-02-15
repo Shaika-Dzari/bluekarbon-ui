@@ -11,13 +11,18 @@ import {doMessageEditorTitleChange, doMessageEditorTitleBlur,
         doMessageEditorCategoryUnCheck,
         doMessageEditorSave} from '../../actions/messageActions.js';
 
+import {doBlogPostsSave, doBlogPostsEdrTextChange, doBlogPostsEdrTitleChange,
+        doBlogPostsEdrTitleBlur, doBlogPostsEdrPrettyUrlChange,
+        doBlogPostsEdrPublishedCheck, doBlogPostsEdrCategoryCheck} from '../../actions/blogPostActions.js';
+
 import './messageeditor.scss';
 
 const MESSAGE_URL = '/api/messages';
 
 const mapStateToProps = (state, ownProps) => {
     let id = ownProps.params.messageId;
-    let msg = state.messages.items[id];
+    let messageType = ownProps.params.messageType;
+
     let clipboards = [];
     let buffer = state.files.buffer;
 
@@ -32,18 +37,34 @@ const mapStateToProps = (state, ownProps) => {
         });
     }
 
-
-    return {
-        messageId: id,
-        module: state.modules.items[msg.moduleid],
-        title: msg.title,
-        prettyurl: msg.prettyurl,
-        text: msg.body,
-        published: msg.published,
-        categories: msg.categories,
+    // State to return
+    let stateprops = {
+        entityId: id,
+        messageType: messageType,
         error: state.messages.error,
         clipboardElements: clipboards
     };
+
+    // items, index and functions
+    if (messageType == 'blogposts') {
+
+        stateprops.entity = state.blogposts.items[id];
+        stateprops.module = state.modules.codeindex['BLOG'];
+
+        // Funcs
+        stateprops.savefunc = doBlogPostsSave;
+        stateprops.textChangeFunc = doBlogPostsEdrTextChange;
+        stateprops.titleChangeFunc = doBlogPostsEdrTitleChange;
+        stateprops.titleBlurFunc = doBlogPostsEdrTitleBlur;
+        stateprops.prettyUrlChangeFunc = doBlogPostsEdrPrettyUrlChange;
+        stateprops.publishedCheckFunc = doBlogPostsEdrPublishedCheck;
+        stateprops.categoryCheckFunc = doBlogPostsEdrCategoryCheck;
+
+    } // Do others
+
+
+    return stateprops;
+
 };
 
 class MessageEditor extends React.Component {
@@ -62,25 +83,25 @@ class MessageEditor extends React.Component {
 
     onEditorChange(value) {
         const { dispatch } = this.props;
-        dispatch(doMessageEditorTextChange(this.props.messageId, value));
+        dispatch(this.props.textChangeFunc(value));
     }
 
     onTitleChange(event) {
         let v = event.target.value;
         const { dispatch } = this.props;
-        dispatch(doMessageEditorTitleChange(this.props.messageId, v));
+        dispatch(this.props.titleChangeFunc(v));
     }
 
     onPrettyUrlChange(event) {
         let v = event.target.value;
         const { dispatch } = this.props;
-        dispatch(doMessageEditorPrettyUrlChange(this.props.messageId, v));
+        dispatch(this.props.prettyUrlChangeFunc(v));
     }
 
     onTitleBlur(event) {
         let v = event.target.value;
         const { dispatch } = this.props;
-        dispatch(doMessageEditorTitleBlur(this.props.messageId, v));
+        dispatch(this.props.titleBlurFunc(v));
     }
 
     onPublishedClick(event) {
@@ -88,45 +109,35 @@ class MessageEditor extends React.Component {
         event.preventDefault();
         let pub = target.dataset.n4Value;
         const { dispatch } = this.props;
-        dispatch(doMessageEditorPublishedCheck(this.props.messageId, pub == 'true'));
+        dispatch(this.props.publishedCheckFunc(pub == 'true'));
     }
 
     onCategorySelect(category) {
         const { dispatch } = this.props;
-        dispatch(doMessageEditorCategoryCheck(this.props.messageId, category));
+        dispatch(this.props.categoryCheckFunc(category));
     }
 
     onCategoryUnSelect(category) {
         const { dispatch } = this.props;
-        dispatch(doMessageEditorCategoryUnCheck(this.props.messageId, category));
+        dispatch(this.props.categoryCheckFunc(category));
     }
 
     onSave(event) {
         const { dispatch } = this.props;
-        dispatch(doMessageEditorSave(this.props.messageId));
+        dispatch(this.props.savefunc());
     }
 
     render() {
-
-        let error = null;
-
-        if (this.props.error) {
-            if (this.props.error instanceof Error) {
-                error = this.props.error.name + ': ' + this.props.error.message;
-            } else {
-                error = '' + this.props.error;
-            }
-        }
 
         return (
             <div className="message-editor-ctn box bluebox">
                 <div className="heading">
                     <div className="row">
                         <div className="col-6">
-                            <h4>#{this.props.messageId} - {this.props.title} - {this.props.module.name}</h4>
+                            <h4>#{this.props.entityId} - {this.props.entity.title} - {this.props.module.name}</h4>
                         </div>
                         <div className="col-6 right">
-                            {this.props.published ? <button className="btn" onClick={this.onPublishedClick} data-n4-value="false">Retirer</button> :
+                            {this.props.entity.published ? <button className="btn" onClick={this.onPublishedClick} data-n4-value="false">Retirer</button> :
                                                     <button className="btn" onClick={this.onPublishedClick} data-n4-value="true">Publier</button>
                             }
 
@@ -135,18 +146,18 @@ class MessageEditor extends React.Component {
                     </div>
                 </div>
                 <div className="body">
-                    <AlertBox message={error} />
+                    <AlertBox message={this.props.error} />
                     <div className="row">
                         <div className="col-9">
                             <div className="box">
                                 <div className="body">
                                     <div className="frm">
                                         <label htmlFor="msg-title">Titre</label>
-                                        <input type="text" value={this.props.title} onChange={this.onTitleChange} onBlur={this.onTitleBlur} id="msg-title" />
+                                        <input type="text" value={this.props.entity.title} onChange={this.onTitleChange} onBlur={this.onTitleBlur} id="msg-title" />
                                         <label htmlFor="msg-url">URL</label>
-                                        <input type="text" value={this.props.prettyurl} onChange={this.onPrettyUrlChange} id="msg-url" />
+                                        <input type="text" value={this.props.entity.prettyurl} onChange={this.onPrettyUrlChange} id="msg-url" />
                                         <label htmlFor="msg-text">Message</label>
-                                        <Editor value={this.props.text} onEditorChange={this.onEditorChange} id="msg-text" />
+                                        <Editor value={this.props.entity.body} onEditorChange={this.onEditorChange} id="msg-text" />
                                     </div>
                                 </div>
                             </div>
@@ -157,7 +168,7 @@ class MessageEditor extends React.Component {
                                     {this.props.module.enablecategory ?
                                         <CategoryEditor onComponentSelect={this.onCategorySelect}
                                                         onComponentUnSelect={this.onCategoryUnSelect}
-                                                        selectedItems={this.props.categories}
+                                                        selectedItems={this.props.entity.categories}
                                                         moduleid={this.props.module.id} />
                                         :
                                         null

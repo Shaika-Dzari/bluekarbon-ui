@@ -1,29 +1,42 @@
 import React from 'react';
 import {Link, withRouter} from 'react-router';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import {doMessageFetch, doMessageFetchForEdit, doMessageEditAndNavigate, doFilterAndNavigate, doSwitchModule} from '../../actions/messageActions.js';
+import {MODULE_URLS} from '../../actions/navigationActions.js';
+import {doBlogPostsAdminFetchPage, doBlogPostsFetchAndEdit} from '../../actions/blogPostActions.js';
+
 import Table from '../../component/table/table.jsx';
 import PagingParam from '../../utils/PagingParam.js';
 import LinkPager from '../../component/pager/linkpager.jsx';
 
 import './adminmessage.scss';
 
+const ADMIN_PAGE_SIZE = 10;
+
 const mapStateToProps = (state, ownProps) => {
-
-    let moduleid = ownProps.location.query.moduleid;
+    let messageType = ownProps.params.messageType;
     let page = ownProps.location.query.page || 0;
+    let baseUrl = MODULE_URLS.admin[messageType];
+    let modules = state.modules;
 
-    if (!moduleid) {
-        moduleid = state.modules.codeindex['BLOG'];
-    }
-
-    return {
-        messages: state.blogposts.items,
-        displayed: state.blogposts.index || [],
+    let stateprops = {
+        messageType: messageType,
         page: page,
-        modules: state.modules,
-        moduleid: moduleid
-    }
+        baseUrl: baseUrl,
+        modules: modules
+    };
+    let items, index, loadfunc;
+
+    // items, index and functions
+    if (messageType == 'blogposts') {
+        stateprops.items = state.blogposts.items;
+        stateprops.index = state.blogposts.index || [];
+        stateprops.loadfunc = doBlogPostsAdminFetchPage;
+        stateprops.editfunc = doBlogPostsFetchAndEdit;
+    } // Do others
+
+    return stateprops;
 }
 
 class AdminMessage extends React.Component {
@@ -36,48 +49,47 @@ class AdminMessage extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch } = this.props;
-        //dispatch(doMessageFetch(new PagingParam(null, null, 10)));
+        const { dispatch, index } = this.props;
+        if (!index || index.length == 0) {
+            dispatch(this.props.loadfunc(0, ADMIN_PAGE_SIZE, null, true, ['published=all']));
+        }
     }
 
     onNewMessage(event) {
         event.preventDefault();
-        let moduleid = event.target.dataset.n4ModuleId;
         const { dispatch } = this.props;
-        dispatch(doMessageEditAndNavigate({id: 'new', moduleid: moduleid}));
+        dispatch(this.props.editfunc({id: 'new'}));
+        dispatch(push(this.props.baseUrl + '/new'));
     }
 
     onMessageClick(messageId) {
         const { dispatch } = this.props;
-        dispatch(doMessageFetchForEdit(messageId));
+        dispatch(this.props.editfunc(messageId));
+        dispatch(push(this.props.baseUrl + '/' + messageId));
     }
 
     onFilterClick(e) {
         let mc = e.currentTarget || e.target;
-        let moduleid = mc.dataset.n4ModuleId;
+        let messageType = mc.dataset.bkMessageType;
         e.preventDefault();
         const { dispatch } = this.props;
-        dispatch(doSwitchModule({moduleid: moduleid, size: 20, url: '/dashboard/messages?moduleid=' + moduleid}));
+
+        // messageType
+        let url = MODULE_URLS.admin[messageType];
+
+        dispatch(push(url));
+
     }
 
     render() {
         const { moduleid } = this.props;
-        let displayed = this.props.displayed;
-        let msgs = this.props.messages;
+        let index = this.props.index;
+        let msgs = this.props.items;
 
-
-        let prevdate = null;
-        let nextdate = null;
-
-        if (msgs && displayed && displayed.length > 0) {
-            prevdate = msgs[displayed[0]].createdat;
-            nextdate = msgs[displayed[displayed.length - 1]].createdat;
-        }
-
-        let rows = displayed.map(i => {
+        let rows = index.map(i => {
             let m = msgs[i];
             return (
-                <a href={'/editor/' + m.id} key={'ad-msg-' + m.id} className="message-link row" onClick={(e) => { e.preventDefault(); this.onMessageClick(m.id);}}>
+                <a href={'/dashboard/messages/' + this.props.messageType + '/' + m.id} key={'ad-msg-' + m.id} className="message-link row" onClick={(e) => { e.preventDefault(); this.onMessageClick(m.id);}}>
                     <div className="col-1">{m.id}</div>
                     <div className="col-7"><span className="link">{m.title}</span></div>
                     <div className="col-4">{m.createdat} - {m.published ? 'Published' : 'Unpublished'}</div>
@@ -127,7 +139,6 @@ class AdminMessage extends React.Component {
                         </div>
                     </div>
                 </div>
-                <LinkPager size={20} prevdate={prevdate} nextdate={nextdate} callback={this.onChangePage} />
             </div>
         );
     }

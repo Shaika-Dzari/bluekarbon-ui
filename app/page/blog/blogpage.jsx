@@ -35,7 +35,7 @@ class BlogPage extends React.Component {
 
     onChangePage(page) {
         const { dispatch } = this.props;
-        dispatch(doBlogPostsFetchPage(page, null, true));
+        dispatch(doBlogPostsFetchPage(page, null, null, true));
         scrollToTopPage();
     }
 

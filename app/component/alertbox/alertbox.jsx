@@ -9,6 +9,8 @@ const AlertBox = ({message}) => {
 
     if (message instanceof Error) {
         msg = message.name + ': ' + message.message;
+    } else {
+        msg = '' + message;
     }
 
     return (

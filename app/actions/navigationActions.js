@@ -12,7 +12,13 @@ export const MODULE_URLS = {
     blog: '/blog',
     about: '/about',
     project: '/project',
-    story: '/story'
+    story: '/story',
+    admin: {
+        blogposts: '/dashboard/messages/blogposts',
+        abouts: '/dashboard/messages/abouts',
+        projects: '/dashboard/messages/projects',
+        stories: '/dashboard/messages/stories'
+    }
 };
 
 

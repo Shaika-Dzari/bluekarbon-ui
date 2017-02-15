@@ -59,11 +59,11 @@ const AppRoute = () => {
                     <Route path="/dashboard" component={ ProtectedLayout }>
                         <IndexRoute component={ DashboardPage } />
                         <Route path="" component={ DashboardPage }>
-                            <Route path="messages" component={ AdminMessage } />
-                            <Route path="messages/:messageId" component={ MessageEditor } />
                             <Route path="files" component={ AdminFile } />
                             <Route path="comments" component={ AdminComment } />
                             <Route path="categories" component={ AdminCategory } />
+                            <Route path="messages/:messageType" component={ AdminMessage } />
+                            <Route path="messages/:messageType/:messageId" component={ MessageEditor } />
                         </Route>
                     </Route>
                     <Route path="/error" component={ ErrorPage } />
