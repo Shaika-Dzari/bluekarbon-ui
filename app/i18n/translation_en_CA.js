@@ -14,6 +14,9 @@ const EnglishCanada = {
     dashboard_menu_messages: 'Messages',
     dashboard_menu_files: 'Files',
     dashboard_menu_comments: 'Comments',
-    dashboard_menu_categories: 'Categories'
+    dashboard_menu_categories: 'Categories',
+    editor_published_title: 'Status',
+    editor_published_true: 'Public',
+    editor_published_false: 'Private'
 };
 export default EnglishCanada;

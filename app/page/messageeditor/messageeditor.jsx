@@ -4,6 +4,7 @@ import AlertBox from '../../component/alertbox/alertbox.jsx';
 import Editor from '../../component/editor/editor.jsx';
 import CategoryEditor from '../../component/categoryeditor/categoryeditor.jsx';
 import Clipboard from '../../component/clipboard/clipboard.jsx';
+import PublishStatus from './publishstatus.jsx'
 
 import {doMessageEditorTitleChange, doMessageEditorTitleBlur,
         doMessageEditorPrettyUrlChange, doMessageEditorTextChange,
@@ -42,14 +43,15 @@ const mapStateToProps = (state, ownProps) => {
         entityId: id,
         messageType: messageType,
         error: state.messages.error,
-        clipboardElements: clipboards
+        clipboardElements: clipboards,
+        lang: state.language.locale
     };
 
     // items, index and functions
     if (messageType == 'blogposts') {
 
         stateprops.entity = state.blogposts.items[id];
-        stateprops.module = state.modules.codeindex['BLOG'];
+        stateprops.module = state.modules.items[state.modules.codeindex['BLOG']];
 
         // Funcs
         stateprops.savefunc = doBlogPostsSave;
@@ -79,6 +81,7 @@ class MessageEditor extends React.Component {
         this.onPublishedClick = this.onPublishedClick.bind(this);
         this.onCategorySelect = this.onCategorySelect.bind(this);
         this.onCategoryUnSelect = this.onCategoryUnSelect.bind(this);
+        this.onPublishedChange = this.onPublishedChange.bind(this);
     }
 
     onEditorChange(value) {
@@ -105,21 +108,26 @@ class MessageEditor extends React.Component {
     }
 
     onPublishedClick(event) {
-        let target = event.target;
+        let checked = event.target.checked;
         event.preventDefault();
-        let pub = target.dataset.n4Value;
         const { dispatch } = this.props;
-        dispatch(this.props.publishedCheckFunc(pub == 'true'));
+        dispatch(this.props.publishedCheckFunc(checked));
     }
 
     onCategorySelect(category) {
         const { dispatch } = this.props;
-        dispatch(this.props.categoryCheckFunc(category));
+        dispatch(this.props.categoryCheckFunc(category, true));
     }
 
     onCategoryUnSelect(category) {
         const { dispatch } = this.props;
-        dispatch(this.props.categoryCheckFunc(category));
+        dispatch(this.props.categoryCheckFunc(category, false));
+    }
+
+    onPublishedChange(event) {
+        let val = event.target.value;
+        const { dispatch } = this.props;
+        dispatch(this.props.publishedCheckFunc(val == true || val == 'true'));
     }
 
     onSave(event) {
@@ -129,6 +137,15 @@ class MessageEditor extends React.Component {
 
     render() {
 
+        let pubcs = (
+            <label key={'pubcs-' + this.props.entity.id}>
+                <input type="checkbox"
+                    defaultChecked={this.props.entity.published}
+                    onChange={this.onPublishedClick} />
+                Publier
+            </label>
+        );
+
         return (
             <div className="message-editor-ctn box bluebox">
                 <div className="heading">
@@ -137,10 +154,6 @@ class MessageEditor extends React.Component {
                             <h4>#{this.props.entityId} - {this.props.entity.title} - {this.props.module.name}</h4>
                         </div>
                         <div className="col-6 right">
-                            {this.props.entity.published ? <button className="btn" onClick={this.onPublishedClick} data-n4-value="false">Retirer</button> :
-                                                    <button className="btn" onClick={this.onPublishedClick} data-n4-value="true">Publier</button>
-                            }
-
                             <button className="btn" onClick={this.onSave}>Sauvegarder</button>
                         </div>
                     </div>
@@ -165,6 +178,9 @@ class MessageEditor extends React.Component {
                         <div className="col-3">
                             <div className="box">
                                 <div className="body">
+
+                                    <PublishStatus published={this.props.entity.published} lang={this.props.lang} callback={this.onPublishedChange} />
+
                                     {this.props.module.enablecategory ?
                                         <CategoryEditor onComponentSelect={this.onCategorySelect}
                                                         onComponentUnSelect={this.onCategoryUnSelect}

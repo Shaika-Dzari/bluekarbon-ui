@@ -15,7 +15,6 @@ const mapStateToProps = (state, ownProps) => {
         newcategoryname: state.categories.newcategoryname
     };
 
-    console.log('mapStateToProps => ', obj);
     return obj;
 };
 
@@ -79,7 +78,6 @@ class CategoryEditor extends React.Component {
     }
 
     render() {
-        console.log('render()', this.props.index);
         let cs = this.props.index.map(cid => {
             let key = 'c-' + cid;
             let cat = this.props.categories[cid];

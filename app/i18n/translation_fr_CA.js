@@ -14,6 +14,9 @@ const FrenchCanada = {
     dashboard_menu_messages: 'Messages',
     dashboard_menu_files: 'Fichiers',
     dashboard_menu_comments: 'Commentaires',
-    dashboard_menu_categories: 'Catégories'
+    dashboard_menu_categories: 'Catégories',
+    editor_published_title: 'État',
+    editor_published_true: 'Publique',
+    editor_published_false: 'Privé'
 };
 export default FrenchCanada;

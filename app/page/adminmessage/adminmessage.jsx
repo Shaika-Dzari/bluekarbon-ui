@@ -58,7 +58,7 @@ class AdminMessage extends React.Component {
     onNewMessage(event) {
         event.preventDefault();
         const { dispatch } = this.props;
-        dispatch(this.props.editfunc({id: 'new'}));
+        dispatch(this.props.editfunc('new'));
         dispatch(push(this.props.baseUrl + '/new'));
     }
 

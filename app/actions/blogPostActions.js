@@ -73,7 +73,8 @@ export const doBlogPostsFetchAndEdit = (blogpostid) => {
                 id: 'new',
                 title: '',
                 body: '',
-                prettyurl: ''
+                prettyurl: '',
+                published: false
             }
         }
 
@@ -90,9 +91,12 @@ export const doBlogPostsFetchAndEdit = (blogpostid) => {
 
 export const doBlogPostsSave = () => {
     return (dispatch, getState) => {
-        let blogpost = getState().items[getState().editing];
+        console.log(getState());
+
+        let blogpost = getState().blogposts.items[getState().blogposts.editing];
         let url = BLOGPOST_URL + (blogpost.id === 'new' ? '' : '/' + blogpost.id);
         let protocol = blogpost.id === 'new' ? 'POST' : 'PUT';
+
 
         return FetchUtils.saveOrUpdate(dispatch, protocol, url, blogpost,
                                        doBlogPostsSaved,
@@ -104,12 +108,12 @@ export const doBlogPostsFilter = makeActionCreator(BP_FILTER, 'page', 'categoryi
 export const doBlogPostsReceive = makeActionCreator(BP_LIST_RECEIVE, 'blogposts');
 
 // Related to BlogPost edition
-export const doBlogPostsEdrTextChange = makeActionCreator(BP_EDITOR_TEXT_CHANGE, 'text');
+export const doBlogPostsEdrTextChange = makeActionCreator(BP_EDITOR_TEXT_CHANGE, 'body');
 export const doBlogPostsEdrTitleChange = makeActionCreator(BP_EDITOR_TITLE_CHANGE, 'title');
 export const doBlogPostsEdrTitleBlur = makeActionCreator(BP_EDITOR_TITLE_BLUR, 'title');
 export const doBlogPostsEdrPrettyUrlChange = makeActionCreator(BP_EDITOR_PRETTYURL_CHANGE, 'prettyurl');
 export const doBlogPostsEdrPublishedCheck = makeActionCreator(BP_EDITOR_PUBLISHED_CHECK, 'published');
-export const doBlogPostsEdrCategoryCheck = makeActionCreator(BP_EDITOR_CATEGORY_CHECK, 'category');
+export const doBlogPostsEdrCategoryCheck = makeActionCreator(BP_EDITOR_CATEGORY_CHECK, 'category', 'checked');
 export const doBlogPostsError = makeActionCreator(BP_ERROR, 'error');
 export const doBlogPostsEdit = makeActionCreator(BP_EDIT, 'blogpost');
 export const doBlogPostsSaved = makeActionCreator(BP_SAVED, 'blogpost');
