@@ -3,12 +3,11 @@ import {Link, withRouter} from 'react-router';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import {doMessageFetch, doMessageFetchForEdit, doMessageEditAndNavigate, doFilterAndNavigate, doSwitchModule} from '../../actions/messageActions.js';
-import {MODULE_URLS} from '../../actions/navigationActions.js';
+import {MODULE_URLS, routeToModuleCode} from '../../actions/navigationActions.js';
 import {doBlogPostsAdminFetchPage, doBlogPostsFetchAndEdit} from '../../actions/blogPostActions.js';
 
 import Table from '../../component/table/table.jsx';
-import PagingParam from '../../utils/PagingParam.js';
-import LinkPager from '../../component/pager/linkpager.jsx';
+import Pager from '../../component/pager/pager.jsx';
 
 import './adminmessage.scss';
 
@@ -17,14 +16,16 @@ const ADMIN_PAGE_SIZE = 10;
 const mapStateToProps = (state, ownProps) => {
     let messageType = ownProps.params.messageType;
     let page = ownProps.location.query.page || 0;
-    let baseUrl = MODULE_URLS.admin[messageType];
+    let baseUrl = MODULE_URLS.admin[routeToModuleCode(messageType)];
     let modules = state.modules;
 
     let stateprops = {
+        locale: state.language.locale,
         messageType: messageType,
         page: page,
         baseUrl: baseUrl,
-        modules: modules
+        modules: modules,
+        statistics: state.statistics
     };
     let items, index, loadfunc;
 
@@ -32,11 +33,56 @@ const mapStateToProps = (state, ownProps) => {
     if (messageType == 'blogposts') {
         stateprops.items = state.blogposts.items;
         stateprops.index = state.blogposts.index || [];
-        stateprops.loadfunc = doBlogPostsAdminFetchPage;
-        stateprops.editfunc = doBlogPostsFetchAndEdit;
+        stateprops.statskey = 'blog_total_count';
     } // Do others
 
     return stateprops;
+}
+
+const funcs = {
+    blogposts: {
+        load: doBlogPostsAdminFetchPage,
+        edit: doBlogPostsFetchAndEdit
+    }
+}
+
+const FilterMenu = ({modules, callback, locale}) => {
+    let filters = [];
+    if (modules) {
+        modules.index.forEach(i => {
+            let m = modules.items[i];
+            if (m.enablemodule) {
+                filters.push(<a href="#" onClick={callback} data-bk-module-code={m.code} className="link" key={'filter-' + m.code}>{m.name}</a>);
+            }
+        });
+    }
+
+    return (
+        <div className="right filtermenu">
+            Filters: {filters}
+        </div>
+    );
+}
+
+const CreateMenu = ({modules, callback, locale}) => {
+    let creators = [];
+
+    if (modules) {
+
+        modules.index.forEach(i => {
+            let m = modules.items[i];
+
+            if (m.enablemodule) {
+                creators.push(<button className="btn" onClick={callback} data-bk-module-id={m.id} key={'creator-' + m.code}>{'New ' + m.name}</button>)
+            }
+        });
+    }
+
+    return (
+        <div>
+            {creators}
+        </div>
+    );
 }
 
 class AdminMessage extends React.Component {
@@ -46,45 +92,58 @@ class AdminMessage extends React.Component {
         this.onNewMessage = this.onNewMessage.bind(this);
         this.onMessageClick = this.onMessageClick.bind(this);
         this.onFilterClick = this.onFilterClick.bind(this);
+        this.onChangePage = this.onChangePage.bind(this);
     }
 
     componentDidMount() {
         const { dispatch, index } = this.props;
         if (!index || index.length == 0) {
-            dispatch(this.props.loadfunc(0, ADMIN_PAGE_SIZE, null, true, ['published=all']));
+            dispatch(funcs[this.props.messageType].load(0, ADMIN_PAGE_SIZE, null, true, ['published=all']));
         }
     }
 
     onNewMessage(event) {
+        let target = event.target;
         event.preventDefault();
         const { dispatch } = this.props;
-        dispatch(this.props.editfunc('new'));
+
+        let moduleid = target.dataset.bkModuleId;
+
+        dispatch(funcs[this.props.messageType].edit('new', moduleid));
         dispatch(push(this.props.baseUrl + '/new'));
     }
 
     onMessageClick(messageId) {
         const { dispatch } = this.props;
-        dispatch(this.props.editfunc(messageId));
+        dispatch(funcs[this.props.messageType].edit(messageId));
         dispatch(push(this.props.baseUrl + '/' + messageId));
     }
 
     onFilterClick(e) {
         let mc = e.currentTarget || e.target;
-        let messageType = mc.dataset.bkMessageType;
         e.preventDefault();
         const { dispatch } = this.props;
 
+        let messageType = mc.dataset.bkModuleCode;
+
         // messageType
-        let url = MODULE_URLS.admin[messageType];
+        let url = MODULE_URLS.admin[routeToModuleCode(messageType.toLowerCase())];
 
         dispatch(push(url));
+    }
 
+    onChangePage(page) {
+        const { dispatch } = this.props;
+        dispatch(funcs[this.props.messageType].load(page, ADMIN_PAGE_SIZE, null, true, ['published=all']));
     }
 
     render() {
         const { moduleid } = this.props;
         let index = this.props.index;
         let msgs = this.props.items;
+        let total = this.props.statistics.tables.message[this.props.statskey] || 1;
+        let nbPage = Math.min(ADMIN_PAGE_SIZE, Math.round(total / ADMIN_PAGE_SIZE));
+
 
         let rows = index.map(i => {
             let m = msgs[i];
@@ -97,19 +156,6 @@ class AdminMessage extends React.Component {
             );
         });
 
-        let filters = [];
-        let creators = [];
-
-        this.props.modules.index.forEach(i => {
-            let m = this.props.modules.items[i];
-
-            if (m.enablemodule) {
-                filters.push(<a href="#" onClick={this.onFilterClick} data-n4-module-id={m.id} className="link" key={'filter-' + m.code}>{m.name}</a>);
-                creators.push(<button className="btn" onClick={this.onNewMessage} data-n4-module-id={m.id} key={'creator-' + m.code}>{'New ' + m.name}</button>)
-            }
-
-        });
-
         return (
             <div>
                 <div className="box bluebox">
@@ -119,15 +165,13 @@ class AdminMessage extends React.Component {
                                 <h4>Messages</h4>
                             </div>
                             <div className="col-6 right">
-                                {creators}
+                                <CreateMenu modules={this.props.modules} callback={this.onNewMessage} locale={this.props.locale} />
                             </div>
                         </div>
                     </div>
                     <div className="body">
 
-                        <div className="right filtermenu">
-                            Filters: {filters}
-                        </div>
+                        <FilterMenu modules={this.props.modules} callback={this.onFilterClick} locale={this.props.locale} />
 
                         <div className="message-table">
                             <div className="row header">
@@ -137,6 +181,10 @@ class AdminMessage extends React.Component {
                             </div>
                             {rows}
                         </div>
+
+                    </div>
+                    <div className="footer">
+                        <Pager callback={this.onChangePage} currentPage={this.props.page + 1} nbPage={nbPage} />
                     </div>
                 </div>
             </div>

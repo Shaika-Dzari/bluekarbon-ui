@@ -14,12 +14,30 @@ export const MODULE_URLS = {
     project: '/project',
     story: '/story',
     admin: {
-        blogposts: '/dashboard/messages/blogposts',
-        abouts: '/dashboard/messages/abouts',
-        projects: '/dashboard/messages/projects',
-        stories: '/dashboard/messages/stories'
+        blog: '/dashboard/messages/blogposts',
+        about: '/dashboard/messages/abouts',
+        project: '/dashboard/messages/projects',
+        story: '/dashboard/messages/stories'
     }
 };
+
+
+export function routeToModuleCode(name) {
+    let r = null;
+
+    switch (name) {
+        case 'blogposts' : r = 'blog'; break;
+        case 'abouts' : r = 'about'; break;
+        case 'projects' : r = 'project'; break;
+        case 'stories' : r = 'story'; break;
+        default: r = null;
+    }
+
+    console.log(name, ' => ', r);
+
+    return r;
+}
+
 
 
 export function doStartLoading() {

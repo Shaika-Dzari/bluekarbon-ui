@@ -64,7 +64,7 @@ export const doBlogPostsAdminFetchPage = (page, pagesize) => {
 
 
 
-export const doBlogPostsFetchAndEdit = (blogpostid) => {
+export const doBlogPostsFetchAndEdit = (blogpostid, moduleid) => {
     if (blogpostid == 'new') {
 
         return {
@@ -74,7 +74,8 @@ export const doBlogPostsFetchAndEdit = (blogpostid) => {
                 title: '',
                 body: '',
                 prettyurl: '',
-                published: false
+                published: false,
+                moduleid: moduleid
             }
         }
 

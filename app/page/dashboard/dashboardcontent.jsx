@@ -6,7 +6,7 @@ import './dashboardcontent.scss';
 
 const mapStateToProps = (state) => {
     return {
-        statistics: state.statistics.tables,
+        statistics: state.statistics,
         modules: state.modules
     }
 }
@@ -26,27 +26,23 @@ class DashboardContent extends React.Component {
 
         let sts = null;
 
-        if (this.props.statistics && this.props.statistics.length > 0) {
+        if (this.props.statistics && this.props.statistics.tables) {
             sts = [];
-            for (let sta in this.props.statistics) {
-                let s = this.props.statistics[sta];
-                sts.push(
-                    <div key={'stats-' + s.id} className="dashboard-content-stats">
-                            <span>{s.tablename}</span>
-                            <span>{s.statistic}</span>
-                            <span>{s.value}</span>
-                       </div>
-                );
+
+            for (let sta in this.props.statistics.tables) {
+                console.log(sta);
+                let tableStats = this.props.statistics.tables[sta];
+
+                sts = tableStats.map(s => {
+                    let statname = s.statistic.replace('_', '/');
+
+                    return <div key={'stats-' + s.id} className="dashboard-content-stats">
+                                <span>{sta}</span>
+                                <span>{statname}</span>
+                                <span>{s.value}</span>
+                        </div>;
+                });
             }
-            /*
-            sts = this.props.statistics.map(s => {
-                return <div key={'stats-' + s.id} className="dashboard-content-stats">
-                            <span>{s.tablename}</span>
-                            <span>{s.statistic}</span>
-                            <span>{s.value}</span>
-                       </div>;
-            });
-            */
         }
 
         let mods = this.props.modules.index.map(i => {
@@ -103,7 +99,7 @@ class DashboardContent extends React.Component {
 }
 
 DashboardContent.propTypes = {
-    statistics: PropTypes.array,
+    statistics: PropTypes.object,
     comments: PropTypes.array
 };
 
