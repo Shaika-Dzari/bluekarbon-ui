@@ -21,6 +21,7 @@ export function doCategoryFetch(moduleid) {
 
     return (dispatch, getState) => {
         let cs = getState().categories.index;
+        moduleid = moduleid || '';
 
         if (!cs || cs.length == 0) {
             return FetchUtils.get(dispatch, CATEGORY_URL + '?moduleid=' + moduleid, {}, {action: cs => {

@@ -16,13 +16,15 @@ const BASE_NB_PAGE = 3;
 
 const mapStateToProps = (state, ownProps) => {
     let blogmoduleid = state.modules.codeindex['BLOG'];
+    console.log('blog', state.statistics);
     return {
         blogposts: state.blogposts.items,
         index: state.blogposts.index,
         page: ownProps.location.query.page || 0,
         categories: state.categories.items,
         categoriesindex: state.categories.moduleindex[blogmoduleid],
-        statistics: state.statistics
+        statistics: state.statistics,
+        blogmoduleid: blogmoduleid
     }
 }
 
@@ -42,7 +44,7 @@ class BlogPage extends React.Component {
     componentDidMount() {
         const { dispatch } = this.props
         // this.onChangePage(this.props.page);
-        dispatch(doCategoryFetch());
+        dispatch(doCategoryFetch(this.props.blogmoduleid));
 
         if (!this.props.index || this.props.index.length == 0) {
             dispatch(doBlogPostsFetchPage(this.props.page));
@@ -52,7 +54,7 @@ class BlogPage extends React.Component {
     render() {
 
         let msgs = this.props.blogposts && this.props.index ? <MessageList messages={this.props.blogposts} index={this.props.index} /> : null;
-        let total = this.props.statistics.tables.message.blog_total_count || 1;
+        let total = (this.props.statistics.tables.message ? (this.props.statistics.tables.message.blog_total_count) : 1) || 1;
         let nbPage = Math.min(BASE_NB_PAGE, Math.round(total / 3) + 1);
 
         return (

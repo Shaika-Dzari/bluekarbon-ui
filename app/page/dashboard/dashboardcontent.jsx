@@ -30,11 +30,10 @@ class DashboardContent extends React.Component {
             sts = [];
 
             for (let sta in this.props.statistics.tables) {
-                console.log(sta);
                 let tableStats = this.props.statistics.tables[sta];
 
                 sts = tableStats.map(s => {
-                    let statname = s.statistic.replace('_', '/');
+                    let statname = s.statname.replace('_', '/');
 
                     return <div key={'stats-' + s.id} className="dashboard-content-stats">
                                 <span>{sta}</span>

@@ -25,9 +25,7 @@ class DashboardPage extends React.Component {
     onAdminMessage(e) {
         e.preventDefault();
         const {dispatch} = this.props;
-        //dispatch(doSwitchModule({moduleid: modules.codeindex['BLOG'], size: 20, url: '/dashboard/messages', args: ['published=false']}));
-
-        dispatch(doBlogPostsFetchPage(0, 10, MODULE_URLS.admin.blog, true));
+        dispatch(doBlogPostsFetchPage(0, 10, MODULE_URLS.admin.blog, true, ['published=false']));
     }
 
     render() {

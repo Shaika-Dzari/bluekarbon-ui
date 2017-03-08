@@ -3,7 +3,7 @@
         "target": "ES6",
         "allowSyntheticDefaultImports": true
     },
-    "files": [
-        "app/"
+    "include": [
+        "app/**/*"
     ]
 }

@@ -10,6 +10,7 @@ import { commentReducers } from './commentReducers.js';
 import { statisticReducers } from './statisticReducers.js';
 import { languageReducers } from './languageReducers.js';
 import { blogPostReducers } from './blogPostReducers.js';
+import { moduleReducers } from './moduleReducers.js';
 
 const RootReducers = combineReducers({
     navigation: navigationReducers,
@@ -23,7 +24,7 @@ const RootReducers = combineReducers({
     statistics: statisticReducers,
     language: languageReducers,
     blogposts: blogPostReducers,
-    modules: (state = {items: {}, index: [], codeindex: {}}) => state
+    modules: moduleReducers
 });
 
 export default RootReducers;

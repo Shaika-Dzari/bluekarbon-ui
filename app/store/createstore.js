@@ -7,12 +7,24 @@ import { routerReducer, routerMiddleware } from 'react-router-redux';
 import { createHtmlBody } from '../utils/HtmlUtils.js';
 
 const reduxRouterMiddleware = routerMiddleware(browserHistory);
-let preloadedState = JSON.parse(window.__PRELOADED_STATE__ || '{}');
 
-if (preloadedState && preloadedState.messages && preloadedState.messages.items) {
-    for (let mid in preloadedState.messages.items) {
-        createHtmlBody(preloadedState.messages.items[mid]);
+let preloadedState = null;
+
+try {
+    preloadedState = JSON.parse(window.__PRELOADED_STATE__ || '{}');
+    console.log('successfully parse state > ', preloadedState);
+} catch (error) {
+    console.error(error);
+}
+
+if (preloadedState) {
+    if (preloadedState.messages && preloadedState.messages.items) {
+        for (let mid in preloadedState.messages.items) {
+            createHtmlBody(preloadedState.messages.items[mid]);
+        }
     }
+} else {
+    preloadedState = {};
 }
 
 // Initial Language state

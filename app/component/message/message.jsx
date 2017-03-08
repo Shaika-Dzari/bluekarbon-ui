@@ -3,13 +3,13 @@ import {Link} from 'react-router';
 
 import './message.scss';
 
-const Message = ({id, title, body, bodyhtml, authorname, createdat, categories, prettyurl, withLink, permurl}) => {
+const Message = ({id, title, body, html, authorname, createdat, categories, prettyurl, withLink, permurl}) => {
 
     let cats = null;
     let innerTitle = null;
 
-    if (!bodyhtml) {
-        bodyhtml = body;
+    if (!html) {
+        html = body;
     }
 
     if (categories) {
@@ -39,7 +39,7 @@ const Message = ({id, title, body, bodyhtml, authorname, createdat, categories, 
             </header>
 
             <div className="blog-message-body">
-                <div dangerouslySetInnerHTML={{__html: bodyhtml}}></div>
+                <div dangerouslySetInnerHTML={{__html: html}}></div>
                 <h5>{permurl}</h5>
             </div>
 
